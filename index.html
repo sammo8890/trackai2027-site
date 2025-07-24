@@ -28,19 +28,21 @@
       margin: 0;
       font-size: 1.5rem;
     }
-    nav a {
-      color: #9ca3af;
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    nav a:hover {
-      color: white;
-    }
     .container {
       max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
+    }
+    .intro {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .intro p {
+      margin: 0;
     }
     .card {
       background: white;
@@ -81,14 +83,15 @@
 <body>
   <header>
     <h1>TrackAI2027</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Updates</a>
-    </nav>
   </header>
   <div class="container">
-    <div class="card">
+    <div class="intro">
+      <p><strong>TrackAI2027</strong> is an independent benchmark tracking project designed to monitor progress toward key predictions from the <a href="https://www.ai2027.org" target="_blank">AI2027</a> forecast paper. This site aggregates capability, ecosystem, and timeline data to help clarify where we are—and where we might be headed—as AI accelerates.</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;"><em>This site is not affiliated with the authors of AI2027. It independently tracks progress against its public forecasts.</em></p>
+    </div>
+    </div>
+
+    <div id="home" class="card">
       <h2>🌐 Model & Capability Benchmarks</h2>
       <p>A snapshot of key AI capability milestones — including model performance, agent autonomy, and early signs of capability inflection — as we track progress toward 2027 projections.</p>
       <table>
@@ -105,7 +108,7 @@
       </table>
     </div>
 
-    <div class="card">
+    <div id="about" class="card">
       <h2>📊 Industry & Ecosystem Signals</h2>
       <p>Early market, hardware, and societal signals shaping the trajectory of AI deployment.</p>
       <table>
@@ -121,7 +124,7 @@
       </table>
     </div>
 
-    <div class="card">
+    <div id="updates" class="card">
       <h2>⌛️ Timeline Forecast Adjustments</h2>
       <p>Updated scenario forecasts reflecting recent trends and horizon shifts in AI progress.</p>
       <table>

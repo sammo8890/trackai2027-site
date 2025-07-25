@@ -1,85 +1,167 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TrackAI2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
-      line-height: 1.6;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
-      background-color: #fdfdfd;
-      color: #222;
-    }
-    h1, h2, h3 {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
       color: #111;
+    }
+    header {
+      background: #111827;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .intro {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .intro p {
+      margin: 0;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #1f2937;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 1rem 0;
+      margin-top: 1rem;
+      min-width: 600px;
     }
     th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      padding: 0.75rem;
       text-align: left;
     }
     th {
-      background: #f0f0f0;
+      background-color: #f3f4f6;
     }
-    details {
-      margin-bottom: 1.5rem;
-    }
-    summary {
-      font-weight: bold;
-      cursor: pointer;
-      margin-bottom: 0.5rem;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 2rem 0;
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
-  <h1>AI 2027 Progress Tracker</h1>
-  <p>A structured list of key milestones and benchmarks to monitor AI progress toward the AI 2027 scenario, with special focus on the impact of GPT‑5.</p>
-  <hr/>  <h2>🌐 1. Model & Capability Benchmarks</h2>
-  <table>
-      <thead>
-        <tr><th>Milestone</th><th>Description</th><th>Expected Timeline</th><th>Status</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>GPT-5 Release</td><td>Official launch of GPT-5 to public/enterprise</td><td>Aug 2025</td><td>PENDING</td><td>Watch for OpenAI announcements</td></tr>
-        <tr><td>GPT-5 Coding Performance</td><td>Outperforms top human coders on SWE-Bench, HumanEval, MATH, etc.</td><td>Q3–Q4 2025</td><td>NOT YET</td><td>Awaiting benchmarking results</td></tr>
-        <tr><td>Agent Autonomy</td><td>Agent can complete 30–60+ minute multi-step tasks unsupervised</td><td>Late 2025</td><td>NOT YET</td><td>Based on ChatGPT Agent maturity</td></tr>
-        <tr><td>Self-Improvement</td><td>GPT-5 contributes to improving its successors or sibling models</td><td>2026</td><td>NOT YET</td><td>Requires evidence of recursive use</td></tr>
-        <tr><td>Researcher Replacement</td><td>GPT-based systems perform >50% of R&D tasks in specific domains</td><td>2026–2027</td><td>NOT YET</td><td>Possible tipping point</td></tr>
-      </tbody>
-    </table>  <h2>📊 2. Industry & Ecosystem Signals</h2>
-  <table>
-    <thead>
-      <tr><th>Signal</th><th>Description</th><th>Status</th><th>Notes</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>AI Research Speedup</td><td>Evidence of R&D acceleration due to LLM assistance</td><td>EMERGING</td><td>Copilot & GPT-powered agents in use</td></tr>
-      <tr><td>AI-Driven Startups</td><td>Surge in fully AI-run startups (no devs/designers)</td><td>EARLY</td><td>Few high-profile cases in 2025</td></tr>
-      <tr><td>AGI Warning Events</td><td>Widespread calls for pause or regulation due to system capabilities</td><td>NOT YET</td><td>Would indicate crossing a trust boundary</td></tr>
-      <tr><td>Hardware Scaling</td><td>New compute breakthroughs (e.g. GPU, ASIC for LLMs)</td><td>ACTIVE</td><td>Nvidia Blackwell, etc. announced</td></tr>
-    </tbody>
-  </table>  <h2>⌛️ 3. Timeline Forecast Adjustments</h2>
-  <table>
-    <thead>
-      <tr><th>Model</th><th>Previous Median</th><th>Current Median</th><th>Notes</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>AI2027 Original</td><td>2027</td><td>2027</td><td>Baseline story forecast</td></tr>
-      <tr><td>Revised (May 2025)</td><td>2027</td><td>2029–2030</td><td>Based on critique & modeling revisions</td></tr>
-      <tr><td>METR Horizon Doubling</td><td>~6 months</td><td>~4–7 months</td><td>Holding steady for now</td></tr>
-    </tbody>
-  </table>
+  <header>
+    <h1>TrackAI2027</h1>
+  </header>
+  <div class="container">
+    <div class="intro">
+      <p><strong>TrackAI2027</strong> is an independent benchmark tracking project designed to monitor progress toward key predictions from the <a href="https://ai-2027.com" target="_blank">AI2027</a> forecast paper. This site aggregates capability, ecosystem, and timeline data to help clarify where we are—and where we might be headed—as AI accelerates.</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;"><em>This site is not affiliated with the authors of AI2027. It independently tracks progress against its public forecasts.</em></p>
+    </div>
+    <div id="home" class="card">
+      <h2>🌐 Model & Capability Benchmarks</h2>
+      <p>A snapshot of key AI capability milestones — including model performance, agent autonomy, and early signs of capability inflection — as we track progress toward 2027 projections.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Milestone</th><th>Description</th><th>Expected Timeline</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Autonomous Agent Tasks</td><td>Agent completes 30–60+ minute multi-step tasks unsupervised</td><td>Late 2025</td><td>NOT YET</td><td>Core proxy for practical AI autonomy</td></tr>
+            <tr><td>Researcher Replacement</td><td>LLM-based systems perform >50% of R&D tasks in specific domains</td><td>2026–2027</td><td>NOT YET</td><td>Reflects functional automation threshold</td></tr>
+            <tr><td>GPT-5 Release</td><td>Official launch of GPT-5 to public/enterprise</td><td>Aug 2025</td><td>PENDING</td><td>Useful milestone but not core focus</td></tr>
+            <tr><td>GPT-5 Coding Performance</td><td>Outperforms top human coders on SWE-Bench, HumanEval, MATH, etc.</td><td>Q3–Q4 2025</td><td>NOT YET</td><td>To be monitored, not central benchmark</td></tr>
+            <tr><td>Self-Improvement</td><td>Model contributes to improving its successors or sibling models</td><td>2026</td><td>NOT YET</td><td>Requires recursive design or tuning role</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="about" class="card">
+      <h2>📊 Industry & Ecosystem Signals</h2>
+      <p>Early market, hardware, and societal signals shaping the trajectory of AI deployment.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Signal</th><th>Description</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI Research Speedup</td><td>Evidence of R&D acceleration due to LLM assistance</td><td>EMERGING</td><td>Copilot & GPT-powered agents in use</td></tr>
+            <tr><td>AI-Driven Startups</td><td>Surge in fully AI-run startups (no devs/designers)</td><td>EARLY</td><td>Few high-profile cases in 2025</td></tr>
+            <tr><td>AGI Warning Events</td><td>Widespread calls for pause or regulation due to system capabilities</td><td>NOT YET</td><td>Would indicate crossing a trust boundary</td></tr>
+            <tr><td>Hardware Scaling</td><td>New compute breakthroughs (e.g. GPU, ASIC for LLMs)</td><td>ACTIVE</td><td>Nvidia Blackwell, etc. announced</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="updates" class="card">
+      <h2>⌛️ Timeline Forecast Adjustments</h2>
+      <p>Updated scenario forecasts reflecting recent trends and horizon shifts in AI progress.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Model</th><th>Previous Median</th><th>Current Median</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI2027 Original</td><td>2027</td><td>2027</td><td>Baseline story forecast</td></tr>
+            <tr><td>Revised (May 2025)</td><td>2027</td><td>2029–2030</td><td>Based on critique & modeling revisions</td></tr>
+            <tr><td>METR Horizon Doubling</td><td>~6 months</td><td>~4–7 months</td><td>Holding steady for now</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="container" style="margin-bottom: 2rem;">
+      <div class="card">
+        <h2>🧠 Progress Toward Super-Intelligence</h2>
+        <p>This bar estimates cumulative progress across all tracked benchmarks on this site.</p>
+        <div style="background-color: #e5e7eb; border-radius: 9999px; overflow: hidden; height: 24px; margin-top: 1rem;">
+          <div style="width: 25%; background-color: #10b981; height: 100%; text-align: center; color: white; line-height: 24px; font-weight: bold;">
+            25%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 TrackAI2027 · Last updated: July 24, 2025
+    </footer>
 </body>
 </html>

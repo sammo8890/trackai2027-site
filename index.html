@@ -65,12 +65,13 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
-      min-width: 600px;
+      min-width: 100%;
     }
     th, td {
       border: 1px solid #d1d5db;
       padding: 0.75rem;
       text-align: left;
+      vertical-align: top;
     }
     th {
       background-color: #f3f4f6;
@@ -119,6 +120,15 @@
       max-width: 800px;
       border-radius: 0.5rem;
     }
+    .references {
+      font-size: 0.9rem;
+      color: #4b5563;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .references li {
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -141,7 +151,6 @@
       <p style="margin-top: 1rem; color: #6b7280; font-size: 0.95rem;"><strong>Bum-pluck estimate:</strong> 2030 (±3 years)</p>
     </div>
 
-    <!-- RESTORED CONTENT PLACEHOLDER -->
     <div class="card">
       <h2>📈 Capabilities Benchmarks</h2>
       <div class="table-wrapper">
@@ -150,6 +159,8 @@
           <tbody>
             <tr><td>GPT-4 or similar replaces junior researcher in closed QA tasks</td><td data-status="ACTIVE">ACTIVE</td><td>Used internally at several orgs for synthesis</td></tr>
             <tr><td>Autonomous agents complete 30–60 minute tasks</td><td data-status="EMERGING">EMERGING</td><td>Auto-GPT-style agents show promise</td></tr>
+            <tr><td>AI agents run research pipelines end-to-end</td><td data-status="PENDING">PENDING</td><td>Tool use + memory emerging</td></tr>
+            <tr><td>AI executes software projects from prompt to deploy</td><td data-status="NOT YET">NOT YET</td><td>Modular dev tools emerging</td></tr>
           </tbody>
         </table>
       </div>
@@ -162,6 +173,8 @@
           <tbody>
             <tr><td>Nvidia Blackwell shipping</td><td data-status="PENDING">PENDING</td><td>Announced but not released</td></tr>
             <tr><td>AGI-native startups founded</td><td data-status="EMERGING">EMERGING</td><td>Multiple teams formed with AGI focus</td></tr>
+            <tr><td>Corporate AI labs release agents</td><td data-status="EARLY">EARLY</td><td>Google + OpenAI previews shared</td></tr>
+            <tr><td>Popular agents with memory + browsing</td><td data-status="EARLY">EARLY</td><td>pi.ai, GPT-4o, Claude 3 Opus</td></tr>
           </tbody>
         </table>
       </div>
@@ -174,6 +187,7 @@
           <tbody>
             <tr><td>AI2027 best-guess timeline</td><td data-status="ACTIVE">ACTIVE</td><td>2027</td></tr>
             <tr><td>Independent forecast revision</td><td data-status="EMERGING">EMERGING</td><td>2029</td></tr>
+            <tr><td>Widespread economic impact (>10% GDP boost)</td><td data-status="NOT YET">NOT YET</td><td>2030+</td></tr>
           </tbody>
         </table>
       </div>
@@ -184,6 +198,17 @@
         <li>Prediction market movements (e.g. Metaculus)</li>
         <li>Global diffusion and open-source AI capabilities</li>
         <li>Governance response, policy tooling, safety benchmarks</li>
+      </ul>
+    </div>
+
+    <div class="card references">
+      <h2>📚 References</h2>
+      <ul>
+        <li>AI2027 Forecast Paper – <a href="https://ai-2027.com" target="_blank">ai-2027.com</a></li>
+        <li>Nvidia Blackwell – Official press release, March 2024</li>
+        <li>AutoGPT / Devin demos – GitHub + Cognosys reports</li>
+        <li>OpenAI GPT-4o, Claude 3 Opus documentation</li>
+        <li>Sam Altman interview with Lex Fridman, June 2025</li>
       </ul>
     </div>
 

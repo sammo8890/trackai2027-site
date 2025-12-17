@@ -1,266 +1,140 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrackAI2027</title>
+  <title>TrackAI2027 | Frontier Model Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <meta name="description" content="Independent tracker benchmarking progress toward AI2027 predictions: capabilities, timelines, and ecosystem signals." />
   <style>
     :root {
-      --bg: #0b1020;
-      --card: #0f172a;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --border: #1f2a44;
-      --accent: #22c55e;
-      --accent-soft: #16a34a20;
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-      --radius: 14px;
+      --bg: #0b1020; --card: #0f172a; --text: #e5e7eb; --muted: #94a3b8;
+      --border: #1f2a44; --accent: #22c55e; --radius: 14px;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
     body {
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: radial-gradient(1000px 600px at 10% -10%, #23346b33, transparent),
-                  radial-gradient(800px 400px at 110% 0%, #0ea5e933, transparent),
-                  var(--bg);
-      margin: 0;
-      color: var(--text);
-      line-height: 1.55;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+      margin: 0; line-height: 1.6;
     }
-    header {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(180deg, #0b1020cc, #0b102000);
-      border-bottom: 1px solid var(--border);
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    .card {
+      background: linear-gradient(180deg, #111a33, #0f172a);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
-    .nav {
-      max-width: 1100px; margin: 0 auto; padding: 14px 20px;
-      display: flex; align-items: center; justify-content: space-between;
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    h2 { font-size: 22px; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      font-weight: 700; font-size: 11px; text-transform: uppercase;
     }
-    .brand { font-weight: 700; letter-spacing: 0.2px; }
-    .tag { color: var(--muted); font-size: 14px; }.container { max-width: 1100px; margin: 28px auto 80px; padding: 0 20px; }
-
-.card {
-  background: linear-gradient(180deg, #111a33, #0f172a 45%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px 22px 18px;
-  box-shadow: var(--shadow);
-  margin-bottom: 22px;
-}
-.card h2 { margin: 0 0 8px; font-size: 20px; }
-.card p.lead { margin: 6px 0 0; color: var(--muted); }
-
-.grid { display: grid; gap: 22px; }
-
-.progress-wrap { margin-top: 10px; }
-.progress {
-  height: 20px; border-radius: 999px; overflow: hidden;
-  background: #0b1226; border: 1px solid var(--border);
-}
-.bar { height: 100%; width: 25%;
-  background: linear-gradient(90deg, #22c55e, #06b6d4);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 12px; color: #001a10;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.25);
-}
-
-.table-wrapper { overflow: auto; border-radius: 12px; border: 1px solid var(--border); }
-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 700px; }
-thead th {
-  position: sticky; top: 0; z-index: 1;
-  background: #0e162f; color: #cbd5e1; text-align: left; font-weight: 600;
-  padding: 12px 14px; border-bottom: 1px solid var(--border);
-}
-tbody td { padding: 12px 14px; border-bottom: 1px solid #162141; vertical-align: top; }
-tbody tr:hover td { background: #0e1733; }
-
-/* Unified column widths via colgroup */
-.cols-3 col:nth-child(1) { width: 44%; }
-.cols-3 col:nth-child(2) { width: 22%; }
-.cols-3 col:nth-child(3) { width: 34%; }
-
-.cols-3b col:nth-child(1) { width: 44%; }
-.cols-3b col:nth-child(2) { width: 24%; }
-.cols-3b col:nth-child(3) { width: 32%; }
-
-.legend { display:flex; gap:10px; flex-wrap: wrap; margin-top: 10px; color: var(--muted); font-size: 12px; }
-
-.badge {
-  display: inline-block; padding: 2px 10px; border-radius: 999px;
-  font-weight: 700; font-size: 12px; letter-spacing: .2px; border: 1px solid transparent;
-}
-.b-notyet { background:#3b0b13; color:#fecaca; border-color:#7f1d1d55; }
-.b-pending { background:#3b2f0b; color:#fef9c3; border-color:#854d0e55; }
-.b-emerging { background:#0b2a3b; color:#bae6fd; border-color:#0ea5e955; }
-.b-early { background:#2e1b5b; color:#e9d5ff; border-color:#7c3aed55; }
-.b-active { background:#0f2b1c; color:#bbf7d0; border-color:#15803d55; }
-
-.note { color: var(--muted); font-size: 14px; }
-
-.ai-credit {
-  background: #0e162f; border: 1px solid var(--border);
-  color: var(--muted); font-style: italic; font-size: 13px;
-  text-align: center; padding: 12px 14px; border-radius: var(--radius);
-  margin-top: 26px;
-}
-
-footer { color: var(--muted); text-align: center; margin: 30px 0 60px; font-size: 13px; }
-
-@media (max-width: 780px) {
-  .bar { font-size: 11px; }
-  .container { margin-top: 16px; }
-}
-
+    .b-frontier { background: #1e3a8a; color: #bfdbfe; } /* Blue for Frontier */
+    .b-open { background: #064e3b; color: #a7f3d0; }    /* Green for Open Weight */
+    .status-tag { color: var(--accent); font-weight: 600; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { text-align: left; color: var(--muted); font-size: 13px; padding: 10px; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 10px; border-bottom: 1px solid #162141; font-size: 14px; }
+    .note { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 10px; }
+    footer { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="nav">
-      <div class="brand">TrackAI2027</div>
-      <div class="tag">Independent tracker</div>
+
+<div class="container">
+  <section class="card">
+    <h2>🚀 The 2027 Intelligence Race</h2>
+    <p>Tracking the convergence of <strong>Gemini 3</strong>, <strong>Claude 4.5</strong>, and <strong>GPT-5.2</strong> toward AGI-level benchmarks.</p>
+    <div style="height: 10px; background: #0b1226; border-radius: 5px; overflow: hidden; margin: 15px 0;">
+      <div style="width: 48%; height: 100%; background: linear-gradient(90deg, #22c55e, #06b6d4);"></div>
     </div>
-  </header>  <main class="container">
+    <p class="note">Aggregate Progress: 48% — The jump to "Reasoning-first" architectures in late 2025 has moved the needle significantly.</p>
+  </section>
+
+  <div class="grid">
     <section class="card">
-      <h2>What this is</h2>
-      <p class="lead"><strong>TrackAI2027</strong> benchmarks public claims from the <a href="https://ai-2027.com" target="_blank" rel="noopener noreferrer">AI2027</a> forecast against real‑world progress in capabilities, deployment, and timelines.</p>
-      <p class="note">We’re independent of the authors. Sources are linked where possible; confidence calls are ours and will evolve.</p>
-    </section><section class="card">
-  <h2>🧠 Progress toward super‑intelligence</h2>
-  <p class="note">A rough, hand‑rolled composite of tracked benchmarks. Also featuring a tongue‑in‑cheek “super‑intelligence arrival bum‑pluck”.</p>
-  <div class="progress-wrap">
-    <div class="progress"><div class="bar" aria-label="overall progress" title="Overall progress estimate">25%</div></div>
-  </div>
-  <p class="note" style="margin-top:10px"><strong>Bum‑pluck estimate:</strong> 2030 (±3 years)</p>
-</section>
+      <h2>🏆 Frontier Leaders</h2>
+      <table>
+        <thead><tr><th>Model</th><th>Specialty</th><th>Benchmark Score</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Gemini 3 Pro</strong></td>
+            <td>Reasoning & Vision</td>
+            <td>91.9% (GPQA)</td>
+          </tr>
+          <tr>
+            <td><strong>Claude 4.5 Opus</strong></td>
+            <td>Coding & Agency</td>
+            <td>80.9% (SWE-bench)</td>
+          </tr>
+          <tr>
+            <td><strong>GPT-5.2 Thinking</strong></td>
+            <td>Logic & Math</td>
+            <td>54.2% (ARC-AGI-2)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-<section class="card">
-  <h2>📈 Capabilities benchmarks</h2>
-  <p class="note">Core technical milestones indicating qualitative shifts in what AI systems can do.</p>
-  <div class="table-wrapper">
-    <table class="cols-3">
-      <colgroup><col/><col/><col/></colgroup>
+    <section class="card">
+      <h2>🔓 Open Weight Power</h2>
+      <table>
+        <thead><tr><th>Model</th><th>Status</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Llama 4 Scout</strong></td>
+            <td><span class="badge b-open">Live</span></td>
+            <td>Native 10M context window.</td>
+          </tr>
+          <tr>
+            <td><strong>DeepSeek V3.2</strong></td>
+            <td><span class="badge b-open">Live</span></td>
+            <td>Efficiency king; Ph.D math parity.</td>
+          </tr>
+          <tr>
+            <td><strong>Mistral Large 3</strong></td>
+            <td><span class="badge b-open">Pending</span></td>
+            <td>Focus on sovereign EU compute.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>📈 Capability Delta (2025 vs 2027 Prediction)</h2>
+    <table>
       <thead>
-        <tr><th>Milestone</th><th>Status</th><th>Notes</th></tr>
+        <tr><th>Milestone</th><th>Leading Model</th><th>Status</th><th>Real-world Evidence</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>GPT‑4/peers replace a junior researcher for closed‑book synthesis/QA</td>
-          <td><span class="badge b-active">ACTIVE</span></td>
-          <td>Widely used internally for literature triage & synthesis; reliability varies by domain.</td>
+          <td>PhD-level Science Synthesis</td>
+          <td>Gemini 3 / GPT-5.2</td>
+          <td class="status-tag">ACHIEVED</td>
+          <td>GPQA 90%+ scores now standard; models cite and verify literature autonomously.</td>
         </tr>
         <tr>
-          <td>Autonomous agents complete 30–60 min multi‑step tasks unsupervised</td>
-          <td><span class="badge b-emerging">EMERGING</span></td>
-          <td>Tool‑use, memory, and planning improving; brittleness remains an issue.</td>
+          <td>Autonomous Software Eng.</td>
+          <td>Claude 4.5 / Devin</td>
+          <td class="status-tag">EMERGING</td>
+          <td>Agents solving 80% of "Verified" GitHub issues without human intervention.</td>
         </tr>
         <tr>
-          <td>Agents run research pipelines end‑to‑end (plan → execute → write‑up)</td>
-          <td><span class="badge b-pending">PENDING</span></td>
-          <td>Promising demos; needs robustness and human‑level verification loops.</td>
-        </tr>
-        <tr>
-          <td>“Prompt‑to‑deploy” software projects executed autonomously</td>
-          <td><span class="badge b-notyet">NOT YET</span></td>
-          <td>Dev‑tooling & evaluation harnesses maturing; still heavy human supervision.</td>
+          <td>Novel Physical Discovery</td>
+          <td>AlphaFold 3+ / GNoME</td>
+          <td class="status-tag">EARLY</td>
+          <td>AI-designed catalysts and stable crystals currently in lab validation.</td>
         </tr>
       </tbody>
     </table>
+  </section>
+
+  <div class="ai-credit" style="text-align:center; color:var(--muted); font-size:12px;">
+    Tracked models: Gemini 3.0 (Google), GPT-5.2 (OpenAI), Claude 4.5 (Anthropic), Llama 4 (Meta).
   </div>
-  <div class="legend">
-    <span class="badge b-notyet">Not yet</span>
-    <span class="badge b-pending">Pending</span>
-    <span class="badge b-emerging">Emerging</span>
-    <span class="badge b-early">Early</span>
-    <span class="badge b-active">Active</span>
-  </div>
-</section>
 
-<section class="card">
-  <h2>🌍 Ecosystem signals</h2>
-  <p class="note">Hardware, market, and platform trends that enable or constrain rapid capability gain.</p>
-  <div class="table-wrapper">
-    <table class="cols-3">
-      <colgroup><col/><col/><col/></colgroup>
-      <thead>
-        <tr><th>Indicator</th><th>Status</th><th>Evidence</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>NVIDIA Blackwell availability at scale</td>
-          <td><span class="badge b-pending">PENDING</span></td>
-          <td>Announced; ramp‑up & delivery windows vary by region/provider.</td>
-        </tr>
-        <tr>
-          <td>AGI‑native startups with sustained traction</td>
-          <td><span class="badge b-emerging">EMERGING</span></td>
-          <td>Growing cohort, early revenues; long‑run durability unclear.</td>
-        </tr>
-        <tr>
-          <td>Major labs ship agent frameworks to consumers</td>
-          <td><span class="badge b-early">EARLY</span></td>
-          <td>Previews/betas public; reliability and guardrails under active work.</td>
-        </tr>
-        <tr>
-          <td>Popular assistants with memory + browsing as defaults</td>
-          <td><span class="badge b-early">EARLY</span></td>
-          <td>Mainstreaming across a few platforms; enterprise rollout uneven.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="card">
-  <h2>🕰️ Timeline forecasts</h2>
-  <p class="note">AI2027’s headline date is ambitious. Many external forecasters place the median later. We treat <strong>2029</strong> as a more conservative midpoint with a wider confidence interval to accommodate slippage in capability, deployment, and adoption.</p>
-  <div class="table-wrapper">
-    <table class="cols-3b">
-      <colgroup><col/><col/><col/></colgroup>
-      <thead>
-        <tr><th>Milestone</th><th>Expected year</th><th>Confidence</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>AI2027 best‑guess timeline</td><td>2027</td><td>Medium</td></tr>
-        <tr><td>Independent forecast midpoint</td><td>2029</td><td>Low–Medium</td></tr>
-        <tr><td>Wider economic impact (&gt;10% GDP boost)</td><td>2030+</td><td>Very low</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="card">
-  <h2>🔍 Untracked forecast areas</h2>
-  <p class="note">Items we’re not yet scoring due to data or scope limits.</p>
-  <ul class="note">
-    <li>Prediction markets (e.g., Metaculus) as leading indicators</li>
-    <li>Alignment/safety capability benchmarks and policy tooling</li>
-    <li>Global diffusion & open‑source capability overhang</li>
-  </ul>
-</section>
-
-<section class="card" id="refs">
-  <h2>📚 References</h2>
-  <ul class="note">
-    <li>AI2027 forecast – <a href="https://ai-2027.com" target="_blank" rel="noopener noreferrer">ai-2027.com</a></li>
-    <li>NVIDIA Blackwell architecture – official announcements / keynotes</li>
-    <li>Agent demos & evaluations – open repos and lab blogs</li>
-    <li>Assistant platform docs – OpenAI, Anthropic, Google</li>
-    <li>Interviews & talks by leading lab leadership (dates noted on site)</li>
-  </ul>
-</section>
-
-<div class="ai-credit">
-  This website was built with the assistance of AI. Over 1.2 kWh of energy was used in model inference — roughly equivalent to a dishwasher cycle or running a 100W bulb for ~12 hours.
+  <footer>
+    © 2025 TrackAI2027 · Independent Data · Last Sync: Dec 17, 2025
+  </footer>
 </div>
 
-<footer>
-  © <span id="y"></span> TrackAI2027 · Last updated: July 24, 2025
-</footer>
-
-  </main>  <script>
-    // Footer year
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script></body>
+</body>
 </html>

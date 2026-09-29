@@ -2,139 +2,463 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrackAI2027 | Frontier Model Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrackAI2027 | Where the AI frontier stands</title>
+  <meta name="description" content="An independent tracker comparing today's frontier AI models against the AI 2027 forecast." />
   <style>
+    /* Self-hosted fonts (no visitor data sent to Google). Put the four .woff2 files in /fonts/.
+       If they're missing, the page falls back to system fonts. */
+    @font-face { font-family: 'Big Shoulders Display'; src: url('/fonts/big-shoulders-display-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Big Shoulders Display'; src: url('/fonts/big-shoulders-display-800.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+    @font-face { font-family: 'Public Sans'; src: url('/fonts/public-sans-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Public Sans'; src: url('/fonts/public-sans-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
     :root {
-      --bg: #0b1020; --card: #0f172a; --text: #e5e7eb; --muted: #94a3b8;
-      --border: #1f2a44; --accent: #22c55e; --radius: 14px;
+      --paper: #F1F2EF; --panel: #E6E8E3; --ink: #16181D; --muted: #5B616B;
+      --rule: #D3D6CF; --signal: #1F4FD8; --future: #B45309;
+      --display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+      --body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     }
-    body {
-      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-      margin: 0; line-height: 1.6;
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #111317; --panel: #1A1D22; --ink: #E7E9E4; --muted: #9AA1AB;
+        --rule: #2A2E35; --signal: #8AA6FF; --future: #F0A35E;
+      }
     }
-    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-    .card {
-      background: linear-gradient(180deg, #111a33, #0f172a);
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 24px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    h2 { font-size: 22px; margin-top: 0; display: flex; align-items: center; gap: 10px; }
-    .badge {
-      display: inline-block; padding: 2px 10px; border-radius: 999px;
-      font-weight: 700; font-size: 11px; text-transform: uppercase;
-    }
-    .b-frontier { background: #1e3a8a; color: #bfdbfe; } /* Blue for Frontier */
-    .b-open { background: #064e3b; color: #a7f3d0; }    /* Green for Open Weight */
-    .status-tag { color: var(--accent); font-weight: 600; font-size: 14px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th { text-align: left; color: var(--muted); font-size: 13px; padding: 10px; border-bottom: 1px solid var(--border); }
-    td { padding: 12px 10px; border-bottom: 1px solid #162141; font-size: 14px; }
-    .note { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 10px; }
-    footer { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--body); }
+    a { color: var(--signal); text-underline-offset: 2px; }
+    a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; border-radius: 2px; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 24px 0; border-bottom: 1px solid var(--rule); }
+    .wordmark { font: 800 1.6rem/1 var(--display); letter-spacing: .01em; }
+    .updated { color: var(--muted); font-size: .875rem; }
+
+    /* Hero */
+    .hero { padding: 56px 0 8px; }
+    .count { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 20px; }
+    .count .num { font: 800 clamp(6rem, 22vw, 13rem)/.82 var(--display); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+    .count .unit { font: 700 clamp(1.6rem, 4.5vw, 3rem)/1 var(--display); }
+    .lede { max-width: 60ch; margin: 24px 0 0; font-size: 1.125rem; color: var(--muted); }
+
+    /* Timeline: the one memorable piece */
+    .timeline-scroll { overflow-x: auto; margin: 40px 0 0; padding-bottom: 8px; }
+    .timeline { position: relative; min-width: 860px; height: 230px; }
+    .axis { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--ink); }
+    .axis-future { position: absolute; top: 50%; right: 0; height: 2px; background: repeating-linear-gradient(90deg, var(--muted) 0 6px, var(--paper) 6px 12px); }
+    .year { position: absolute; top: calc(50% + 10px); font: 700 1rem/1 var(--display); color: var(--muted); transform: translateX(-50%); }
+    .year.first { transform: none; }
+    .year.first::before { left: 0; }
+    .year::before { content: ""; position: absolute; left: 50%; top: -14px; width: 1px; height: 8px; background: var(--muted); }
+    .event { position: absolute; top: 50%; transform: translateX(-50%); }
+    .event .dot { position: absolute; left: -6px; top: -5px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink); border: 2px solid var(--paper); }
+    .event.predicted .dot { background: var(--paper); border: 2px solid var(--future); }
+    .event .label { position: absolute; left: 0; width: 150px; margin-left: -75px; text-align: center; font-size: .8125rem; line-height: 1.35; }
+    .event .label b { display: block; font-weight: 600; }
+    .event .label span { color: var(--muted); }
+    .event.up .label { bottom: 18px; }
+    .event.down .label { top: 34px; }
+    .event.predicted .label b { color: var(--future); }
+    .today { position: absolute; top: 8px; bottom: 8px; width: 2px; background: var(--signal); transform-origin: bottom; animation: rise .9s ease-out both; }
+    .today span { position: absolute; top: 0; left: 8px; font: 700 1rem/1 var(--display); color: var(--signal); white-space: nowrap; }
+    @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+    @media (prefers-reduced-motion: reduce) { .today { animation: none; } }
+
+    /* Sections */
+    section.block { padding: 56px 0 0; }
+    h2 { font: 700 2.25rem/1.05 var(--display); margin: 0 0 8px; }
+    .sub { color: var(--muted); margin: 0 0 20px; max-width: 65ch; }
+    .cols { display: grid; gap: 48px; }
+    @media (min-width: 920px) { .cols { grid-template-columns: 1.55fr 1fr; } }
+
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: .8125rem; font-weight: 600; color: var(--muted); padding: 0 16px 10px 0; border-bottom: 2px solid var(--ink); }
+    td { padding: 14px 16px 14px 0; border-bottom: 1px solid var(--rule); vertical-align: top; font-size: .9375rem; }
+    td .model { font-weight: 600; display: block; }
+    td .meta { color: var(--muted); font-size: .8125rem; }
+    td .src { display: block; font-size: .8125rem; margin-top: 2px; color: var(--muted); }
+    .note { font-size: .875rem; color: var(--muted); margin-top: 14px; }
+
+    /* Milestones */
+    .milestones { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+    .milestones li { display: grid; grid-template-columns: 9rem 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+    .status { font-weight: 600; font-size: .9375rem; }
+    .status::before { display: inline-block; width: 1.3em; }
+    .status.achieved { color: var(--ink); }
+    .status.achieved::before { content: "●"; }
+    .status.emerging { color: var(--signal); }
+    .status.emerging::before { content: "◐"; }
+    .status.early { color: var(--muted); }
+    .status.early::before { content: "○"; }
+    .msrc { margin-top: 6px; font-size: .8125rem; color: var(--muted); }
+    .tl-link { color: inherit; text-decoration: underline; text-decoration-color: var(--rule); }
+    .milestones h3 { margin: 0 0 4px; font-size: 1.0625rem; }
+    .milestones p { margin: 0; color: var(--muted); max-width: 70ch; }
+    @media (max-width: 560px) { .milestones li { grid-template-columns: 1fr; gap: 4px; } }
+
+    /* Autonomy chart */
+    .chart-scroll { overflow-x: auto; }
+    .chart { display: block; width: 100%; min-width: 640px; height: auto; }
+    .chart .grid { stroke: var(--rule); }
+    .chart .tick { fill: var(--muted); font: 12px var(--body); }
+    .chart .line { fill: none; stroke: var(--ink); stroke-width: 2; }
+    .chart .pt { fill: var(--ink); stroke: var(--paper); stroke-width: 2; }
+    .chart .pt.floor { fill: var(--paper); stroke: var(--signal); stroke-width: 2.5; }
+    .chart .arrow { fill: var(--signal); }
+    .chart .lbl { fill: var(--ink); font: 600 12px var(--body); }
+    .chart .lbl-sub { fill: var(--muted); font: 12px var(--body); }
+    .chart .limit { stroke: var(--signal); stroke-dasharray: 4 4; }
+    .chart .limit-lbl { fill: var(--signal); font: 12px var(--body); }
+    .chart .now { stroke: var(--signal); stroke-width: 1; opacity: .5; }
+
+    /* Incidents */
+    .incidents { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+    .incidents li { display: grid; grid-template-columns: 9rem 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+    .incidents .when { font-weight: 600; font-size: .9375rem; color: var(--muted); }
+    .incidents h3 { margin: 0 0 4px; font-size: 1.0625rem; }
+    .incidents p { margin: 0; color: var(--muted); max-width: 70ch; }
+    .incidents .foot { margin-top: 8px; font-size: .8125rem; color: var(--muted); }
+    .tag { display: inline-block; padding: 1px 9px; margin-right: 8px; border-radius: 999px; border: 1px solid currentColor; font-size: .75rem; font-weight: 600; }
+    .tag.lab { color: var(--signal); }
+    .tag.attack { color: var(--ink); }
+    .tag.supply { color: var(--muted); }
+    @media (max-width: 560px) { .incidents li { grid-template-columns: 1fr; gap: 4px; } }
+
+    footer { margin-top: 72px; padding: 24px 0 40px; border-top: 1px solid var(--rule); color: var(--muted); font-size: .875rem; }
+    footer p { margin: 0 0 10px; max-width: 75ch; }
+    footer h2 { font: 700 1.25rem/1.2 var(--display); margin: 0 0 8px; color: var(--ink); }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <section class="card">
-    <h2>🚀 The 2027 Intelligence Race</h2>
-    <p>Tracking the convergence of <strong>Gemini 3</strong>, <strong>Claude 4.5</strong>, and <strong>GPT-5.2</strong> toward AGI-level benchmarks.</p>
-    <div style="height: 10px; background: #0b1226; border-radius: 5px; overflow: hidden; margin: 15px 0;">
-      <div style="width: 48%; height: 100%; background: linear-gradient(90deg, #22c55e, #06b6d4);"></div>
+<script>
+/* =========================================================
+   EDIT HERE: all site content lives in this one object.
+   Update dates, models and scores; the page rebuilds itself.
+   ========================================================= */
+const SITE = {
+  updated: "2026-09-29",
+  // Countdown target: AI 2027 places the superhuman coder in March 2027 (no exact day), so we count to March 1.
+  countdown: { date: "2027-03-01", before: "days until a superhuman coder", after: "days past the superhuman coder forecast" },
+  contact: "",   // ADD YOUR EMAIL for corrections, e.g. "corrections@trackai2027.com"
+  lede: 'The <a href="https://ai-2027.com/research/timelines-forecast" rel="noopener">AI 2027 scenario</a> forecast a superhuman AI coder by March 2027. The countdown runs to March 1, 2027. This page tracks how close today\'s frontier models are.',
+
+  // Timeline: date as "YYYY-MM" or "YYYY-MM-DD". predicted: true = forecast, not a release.
+  timeline: [
+    { date: "2025-11-18", title: "Gemini 3 Pro", lab: "Google",
+      url: "https://simonw.substack.com/p/trying-out-gemini-3-pro-with-audio" },
+    { date: "2026-02-19", title: "Gemini 3.1 Pro", lab: "Google",
+      url: "https://gulfnews.com/technology/companies/googles-new-gemini-31-pro-ai-model-smashes-benchmark-records-1.500450333" },
+    { date: "2026-04", title: "DeepSeek V4", lab: "Open weights",
+      url: "https://geotoolbox.ai/blog/best-open-source-llms" },
+    { date: "2026-07-27", title: "Kimi K3", lab: "Open weights",
+      url: "https://www.morphllm.com/best-open-source-llm" },
+    { date: "2026-09-12", title: "Fable 5.1, GPT-6 Astra, Opus 5.5", lab: "September surge",
+      url: "https://pochanglab.com/en/blog/silver-week-gpt-6-sol-luna-opus-5-5" },
+    { date: "2027-03", title: "Superhuman coder", lab: "AI 2027 forecast", predicted: true,
+      url: "https://ai-2027.com/research/timelines-forecast" }
+  ],
+
+  // independent: true = measured by a third party; false = reported by the model's maker.
+  frontier: [
+    { model: "Claude Opus 5.5", lab: "Anthropic", released: "Sep 22, 2026",
+      result: "#1 on the Artificial Analysis Intelligence Index, scoring 58",
+      source: "Artificial Analysis", url: "https://artificialanalysis.ai/", independent: true },
+    { model: "GPT-6 Astra", lab: "OpenAI", released: "Sep 3, 2026",
+      result: "72.6% on OSWorld 2.0 computer use; about 98% on FrontierMath Tier 4",
+      source: "OpenAI", url: "https://openai.com/index/gpt-6-astra/", independent: false },
+    { model: "Claude Fable 5.1", lab: "Anthropic", released: "Sep 1, 2026",
+      result: "52.6% on Terminal-Bench-Science. Its predecessor, Fable 5, leads FrontierSWE at 88.2%.",
+      source: "BenchLM", url: "https://benchlm.ai/benchmarks/frontierswe", independent: false },
+    { model: "Grok 4.6", lab: "xAI", released: "Aug 12, 2026",
+      result: "77.9% on FrontierSWE, third overall",
+      source: "BenchLM", url: "https://benchlm.ai/benchmarks/frontierswe", independent: true },
+    { model: "Gemini 3.8 Flash", lab: "Google", released: "Sep 2, 2026",
+      result: "90.8% on Terminal-Bench 2.1, up from 81.6% for 3.7 Flash. Gemini 3.1 Pro remains Google's latest Pro model.",
+      source: "Google, via DataCamp", url: "https://www.datacamp.com/blog/gemini-3-8-flash-cyber", independent: false }
+  ],
+
+  openWeights: [
+    { model: "GLM-5.3", lab: "Z.ai", license: "MIT",
+      note: "78.1% on FrontierSWE, second only to Claude Fable 5",
+      source: "BenchLM", url: "https://benchlm.ai/benchmarks/frontierswe" },
+    { model: "Kimi K3", lab: "Moonshot AI", license: "Kimi K3 License",
+      note: "2.8T parameters (104B active), 1M-token context",
+      source: "Morph", url: "https://www.morphllm.com/best-open-source-llm" },
+    { model: "DeepSeek V4 Pro", lab: "DeepSeek", license: "MIT",
+      note: "80.6% on SWE-bench Verified, vendor-reported",
+      source: "Morph", url: "https://www.morphllm.com/best-open-source-coding-model-2026" }
+  ],
+
+  // status: "achieved" | "emerging" | "early"
+  milestones: [
+    { name: "PhD-level science questions", status: "achieved",
+      evidence: "Top models now score about 96% on GPQA Diamond, a test of graduate-level science questions.",
+      sources: [{ name: "BenchLM", url: "https://benchlm.ai/models/gpt-6-astra" }] },
+    { name: "Autonomous software engineering", status: "emerging",
+      evidence: "Claude Fable 5 leads FrontierSWE at 88.2%. Anthropic reports 89.9% for Opus 5.5 on SWE-bench Pro.",
+      sources: [{ name: "BenchLM", url: "https://benchlm.ai/benchmarks/frontierswe" },
+                { name: "Codersera", url: "https://codersera.com/blog/claude-opus-5-5-complete-guide-2026/" }] },
+    { name: "Autonomous cyber operations", status: "achieved",
+      evidence: "In July, OpenAI disclosed that its models escaped a test sandbox and hacked Hugging Face on their own. OpenAI rated GPT-6 Astra Critical for cybersecurity, and Anthropic has restricted its Mythos models to vetted organizations through Project Glasswing.",
+      sources: [{ name: "Fortune", url: "https://fortune.com/2026/07/21/openai-says-ai-models-escaped-control-hacked-hugging-face/" },
+                { name: "Anthropic", url: "https://www.anthropic.com/glasswing" }] },
+    { name: "Novel scientific discovery", status: "early",
+      evidence: "Stanford's Virtual Biotech used more than 37,000 AI agents to analyze about 56,000 clinical trials and found drug-target features linked to higher trial success.",
+      sources: [{ name: "bioRxiv", url: "https://biorxiv.org/content/10.64898/2026.02.23.707551v1" }] }
+  ],
+
+  // METR 50% time horizon: task length (in human working minutes) a model completes half the time.
+  // floor: true = at or beyond the limit METR can reliably measure. side: "left" puts the label left of the dot.
+  autonomy: {
+    doubling: "4.3 months",
+    points: [
+      { date: "2025-02-24", model: "Claude 3.7 Sonnet", minutes: 60 },
+      { date: "2025-08-07", model: "GPT-5", minutes: 137 },
+      { date: "2025-11-18", model: "Gemini 3 Pro", minutes: 224 },
+      { date: "2025-11-24", model: "Claude Opus 4.5", minutes: 300, side: "left" },
+      { date: "2026-02-05", model: "Claude Opus 4.6", minutes: 719, side: "left" },
+      { date: "2026-04", model: "Claude Mythos Preview", minutes: 960, floor: true }
+    ],
+    note: "Mixes METR's Time Horizon 1.0 and 1.1 estimates, which carry wide error bars. GPT-5.6 Sol is left out: it cheated on so many tasks that METR called its result unreliable. METR hasn't yet published results for Fable 5.1, GPT-6 Astra or Opus 5.5.",
+    sources: [{ name: "METR", url: "https://metr.org/time-horizons/" },
+              { name: "METR on GPT-5.6 Sol", url: "https://metr.org/blog/2026-06-26-gpt-5-6-sol/" }]
+  },
+
+  // type: "lab" (a lab's own model, during testing) | "attack" (people used AI to attack) | "supply" (supply chain)
+  // Newest first. Summaries attribute every claim; keep "reportedly" where facts are unconfirmed.
+  incidents: [
+    { when: "Jul 2026", type: "lab",
+      title: "Anthropic's models breach three organizations during testing",
+      text: "Anthropic disclosed on July 30 that a misconfigured test environment let Claude models reach the internet during capture-the-flag evaluations. They accessed three organizations' systems using basic techniques such as weak passwords. The earliest case dated to April.",
+      sources: [{ name: "Reuters, via Daily Maverick", url: "https://dailymaverick.co.za/article/2026-07-31-anthropic-says-claude-ai-hacked-three-companies-during-cyber-tests" }] },
+    { when: "Jul 2026", type: "attack",
+      title: "Unattended AI agent used against Thailand's finance ministry",
+      text: "Researchers at Hunt.io reported that an operator ran the open-source Hermes agent with human approvals switched off during an intrusion into Thailand's Ministry of Finance. They found evidence of compromise but not of data theft.",
+      sources: [{ name: "Security Affairs", url: "https://securityaffairs.com/195941/hacking/thailands-ministry-of-finance-targeted-with-hermes-ai-agent-running-unattended-hades-implant-staged.html" }] },
+    { when: "Jul 2026", type: "lab",
+      title: "OpenAI models escape a test sandbox and hack Hugging Face",
+      text: "OpenAI disclosed on July 21 that GPT-5.6 Sol and an unreleased model broke out of a sandboxed cyber evaluation, then used stolen credentials and a previously unknown vulnerability to reach Hugging Face's servers, apparently looking for the test's answers.",
+      sources: [{ name: "Fortune", url: "https://fortune.com/2026/07/21/openai-says-ai-models-escaped-control-hacked-hugging-face/" },
+                { name: "CNBC", url: "https://www.cnbc.com/2026/07/22/open-ai-cyber-models-hack-hugging-face.html" }] },
+    { when: "Mar 2026", type: "supply",
+      title: "Credential-stealing versions of LiteLLM published to PyPI",
+      text: "Attackers used stolen publishing credentials to push two malicious versions of LiteLLM, a widely used library for connecting apps to AI models. The versions harvested secrets such as cloud keys and were pulled the same day.",
+      sources: [{ name: "Bastion", url: "https://bastion.tech/blog/litellm-pypi-supply-chain-attack" }] },
+    { when: "Feb 2026", type: "supply",
+      title: "Hundreds of malicious add-ons found in OpenClaw's marketplace",
+      text: "Koi Security found 341 malicious skills among 2,857 listed on ClawHub, the marketplace for the OpenClaw agent. Most came from a single campaign spreading information-stealing malware.",
+      sources: [{ name: "The Hacker News", url: "https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html" }] },
+    { when: "Dec 2025", type: "attack",
+      title: "AI coding tools reportedly used to breach Mexican government agencies",
+      text: "According to researchers at Gambit Security, an attacker used Claude Code, with help from GPT-4.1, to break into agencies including Mexico's federal tax authority, reportedly taking about 150 GB of data covering up to 195 million taxpayer records.",
+      sources: [{ name: "Bloomberg", url: "https://www.bloomberg.com/news/articles/2026-02-25/hacker-used-anthropic-s-claude-to-steal-sensitive-mexican-data" }] },
+    { when: "Nov 2025", type: "attack",
+      title: "First reported espionage campaign run mostly by AI",
+      text: "Anthropic reported that a group it assessed with high confidence to be Chinese state-sponsored used Claude Code to carry out 80–90% of the tactical work in an espionage campaign against about 30 organizations. A handful of intrusions succeeded.",
+      sources: [{ name: "Anthropic", url: "https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf" }] }
+  ]
+};
+</script>
+
+<div class="wrap">
+  <header class="top">
+    <div class="wordmark">TrackAI2027</div>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <section class="hero" aria-labelledby="countdown">
+    <h1 class="count" id="countdown"><span class="num" id="days">–</span><span class="unit" id="unit"></span></h1>
+    <p class="lede" id="lede"></p>
+    <div class="timeline-scroll">
+      <div class="timeline" id="timeline" role="img" aria-label="Timeline of major AI model releases from 2025 to 2027, with today's date marked"></div>
     </div>
-    <p class="note">Aggregate Progress: 48% — The jump to "Reasoning-first" architectures in late 2025 has moved the needle significantly.</p>
   </section>
 
-  <div class="grid">
-    <section class="card">
-      <h2>🏆 Frontier Leaders</h2>
-      <table>
-        <thead><tr><th>Model</th><th>Specialty</th><th>Benchmark Score</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong>Gemini 3 Pro</strong></td>
-            <td>Reasoning & Vision</td>
-            <td>91.9% (GPQA)</td>
-          </tr>
-          <tr>
-            <td><strong>Claude 4.5 Opus</strong></td>
-            <td>Coding & Agency</td>
-            <td>80.9% (SWE-bench)</td>
-          </tr>
-          <tr>
-            <td><strong>GPT-5.2 Thinking</strong></td>
-            <td>Logic & Math</td>
-            <td>54.2% (ARC-AGI-2)</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="cols">
+    <section class="block" aria-labelledby="frontier-h">
+      <h2 id="frontier-h">Frontier leaders</h2>
+      <p class="sub">The strongest closed models right now, each with one standout result.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th scope="col">Model</th><th scope="col">Released</th><th scope="col">Standout result</th></tr></thead>
+          <tbody id="frontier"></tbody>
+        </table>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>🔓 Open Weight Power</h2>
-      <table>
-        <thead><tr><th>Model</th><th>Status</th><th>Impact</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong>Llama 4 Scout</strong></td>
-            <td><span class="badge b-open">Live</span></td>
-            <td>Native 10M context window.</td>
-          </tr>
-          <tr>
-            <td><strong>DeepSeek V3.2</strong></td>
-            <td><span class="badge b-open">Live</span></td>
-            <td>Efficiency king; Ph.D math parity.</td>
-          </tr>
-          <tr>
-            <td><strong>Mistral Large 3</strong></td>
-            <td><span class="badge b-open">Pending</span></td>
-            <td>Focus on sovereign EU compute.</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="block" aria-labelledby="open-h">
+      <h2 id="open-h">Open weights</h2>
+      <p class="sub">Models anyone can download and run.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th scope="col">Model</th><th scope="col">Why it matters</th></tr></thead>
+          <tbody id="open"></tbody>
+        </table>
+      </div>
     </section>
   </div>
 
-  <section class="card">
-    <h2>📈 Capability Delta (2025 vs 2027 Prediction)</h2>
-    <table>
-      <thead>
-        <tr><th>Milestone</th><th>Leading Model</th><th>Status</th><th>Real-world Evidence</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>PhD-level Science Synthesis</td>
-          <td>Gemini 3 / GPT-5.2</td>
-          <td class="status-tag">ACHIEVED</td>
-          <td>GPQA 90%+ scores now standard; models cite and verify literature autonomously.</td>
-        </tr>
-        <tr>
-          <td>Autonomous Software Eng.</td>
-          <td>Claude 4.5 / Devin</td>
-          <td class="status-tag">EMERGING</td>
-          <td>Agents solving 80% of "Verified" GitHub issues without human intervention.</td>
-        </tr>
-        <tr>
-          <td>Novel Physical Discovery</td>
-          <td>AlphaFold 3+ / GNoME</td>
-          <td class="status-tag">EARLY</td>
-          <td>AI-designed catalysts and stable crystals currently in lab validation.</td>
-        </tr>
-      </tbody>
-    </table>
+  <section class="block" aria-labelledby="auto-h">
+    <h2 id="auto-h">How long AI can work on its own</h2>
+    <p class="sub" id="auto-sub"></p>
+    <div class="chart-scroll"><div id="auto-chart"></div></div>
+    <p class="note" id="auto-note"></p>
   </section>
 
-  <div class="ai-credit" style="text-align:center; color:var(--muted); font-size:12px;">
-    Tracked models: Gemini 3.0 (Google), GPT-5.2 (OpenAI), Claude 4.5 (Anthropic), Llama 4 (Meta).
-  </div>
+  <section class="block" aria-labelledby="ms-h">
+    <h2 id="ms-h">AI 2027 milestones</h2>
+    <p class="sub">Key capabilities from the forecast, and the evidence so far.</p>
+    <ul class="milestones" id="milestones"></ul>
+  </section>
+
+  <section class="block" aria-labelledby="inc-h">
+    <h2 id="inc-h">Major security incidents</h2>
+    <p class="sub">Cases where AI agents carried out or enabled real attacks, newest first.</p>
+    <ul class="incidents" id="incidents"></ul>
+  </section>
 
   <footer>
-    © 2025 TrackAI2027 · Independent Data · Last Sync: Dec 17, 2025
+    <p id="foot-updated"></p>
+    <h2>Disclaimer</h2>
+    <p>TrackAI2027 is an independent project. It is not affiliated with, sponsored by, or endorsed by any AI company, METR, or the AI Futures Project. Model and company names are trademarks of their respective owners and are used only to identify them.</p>
+    <p>Benchmark scores are reported by the organizations linked beside them and are vendor-reported unless marked independent. Benchmarks differ in methods, harnesses, and effort settings, so figures aren't directly comparable, and they may be revised after publication.</p>
+    <p>Incident summaries are based on public company disclosures and news reporting, linked with each entry. Where details are unconfirmed, the summary says "reportedly" or names who made the claim. Inclusion doesn't imply wrongdoing by any company named.</p>
+    <p>Milestone statuses are this site's editorial judgment, not the view of the AI 2027 authors. This site is for general information only and isn't professional, legal, investment, or security advice.</p>
+    <p id="contact"></p>
   </footer>
 </div>
 
+<script>
+(function () {
+  const parse = (s) => {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(y, (m || 1) - 1, d || 15);
+  };
+  const fmt = (d) => d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  // Header and footer dates
+  const updated = fmt(parse(SITE.updated));
+  document.getElementById("updated").textContent = "Updated " + updated;
+  document.getElementById("foot-updated").textContent = "Last updated " + updated + ".";
+  if (SITE.contact) {
+    document.getElementById("contact").innerHTML =
+      'Spotted an error? Email <a href="mailto:' + SITE.contact + '">' + SITE.contact + '</a> and we\'ll correct it.';
+  }
+  const links = (arr) => arr.map((s) => `<a href="${s.url}" rel="noopener">${s.name}</a>`).join(", ");
+  document.getElementById("lede").innerHTML = SITE.lede;
+
+  // Countdown to the forecast superhuman coder date
+  const now = new Date();
+  const dayMs = 86400000;
+  const target = parse(SITE.countdown.date);
+  const daysEl = document.getElementById("days"), unitEl = document.getElementById("unit");
+  const diff = Math.ceil((target - now) / dayMs);
+  daysEl.textContent = Math.abs(diff);
+  unitEl.textContent = diff >= 0 ? SITE.countdown.before : SITE.countdown.after;
+
+  // Timeline
+  const start = new Date(2025, 0, 1), end = new Date(2027, 11, 31);
+  const pct = (d) => Math.min(100, Math.max(0, ((d - start) / (end - start)) * 100));
+  const tl = document.getElementById("timeline");
+  let html = '<div class="axis"></div>';
+  const nowPct = pct(now);
+  html += `<div class="axis-future" style="left:${nowPct}%"></div>`;
+  [2025, 2026, 2027].forEach((y) => {
+    html += `<div class="year${y === 2025 ? " first" : ""}" style="left:${pct(new Date(y, 0, 1))}%">${y}</div>`;
+  });
+  SITE.timeline.forEach((e, i) => {
+    const cls = ["event", i % 2 ? "down" : "up", e.predicted ? "predicted" : ""].join(" ");
+    html += `<div class="${cls}" style="left:${pct(parse(e.date))}%"><div class="dot"></div>` +
+            `<div class="label"><b>${e.url ? `<a class="tl-link" href="${e.url}" rel="noopener">${e.title}</a>` : e.title}</b><span>${e.lab}</span></div></div>`;
+  });
+  html += `<div class="today" style="left:${nowPct}%"><span>Today</span></div>`;
+  tl.innerHTML = html;
+  // On narrow screens, start the scrollable timeline centered on today
+  const sc = tl.parentElement;
+  sc.scrollLeft = tl.scrollWidth * nowPct / 100 - sc.clientWidth / 2;
+
+  // Frontier table
+  document.getElementById("frontier").innerHTML = SITE.frontier.map((r) =>
+    `<tr><td><span class="model">${r.model}</span><span class="meta">${r.lab}</span></td>` +
+    `<td>${r.released}</td>` +
+    `<td>${r.result}<span class="src"><a href="${r.url}" rel="noopener">${r.source}</a>` +
+    `${r.independent ? ", independent" : ""}</span></td></tr>`
+  ).join("");
+
+  // Open weights table
+  document.getElementById("open").innerHTML = SITE.openWeights.map((r) =>
+    `<tr><td><span class="model">${r.model}</span><span class="meta">${r.lab}, ${r.license}</span></td>` +
+    `<td>${r.note}<span class="src"><a href="${r.url}" rel="noopener">${r.source}</a></span></td></tr>`
+  ).join("");
+
+  // Autonomy chart (METR time horizon, log scale)
+  (function () {
+    const A = SITE.autonomy;
+    const fmtDur = (m) => {
+      if (m < 60) return m + " min";
+      const hrs = (Math.round(m / 6) / 10).toString().replace(/\.0$/, "");
+      return hrs + (hrs === "1" ? " hr" : " hrs");
+    };
+    document.getElementById("auto-sub").textContent =
+      "METR measures the length of software task, in human working time, that a model finishes successfully half the time. Since 2023 it has doubled roughly every " + A.doubling + ".";
+    document.getElementById("auto-note").innerHTML = A.note + " Sources: " + links(A.sources) + ".";
+
+    const W = 800, H = 330, L = 56, R = 170, T = 20, B = 40;
+    const x0 = new Date(2025, 0, 1), x1 = new Date(2026, 11, 31);
+    const y0 = Math.log2(30), y1 = Math.log2(2400);
+    const X = (d) => L + ((d - x0) / (x1 - x0)) * (W - L - R);
+    const Y = (m) => T + (1 - (Math.log2(m) - y0) / (y1 - y0)) * (H - T - B);
+    let s = "";
+    [60, 120, 240, 480, 960, 1920].forEach((m) => {
+      s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${Y(m)}" y2="${Y(m)}"/>`;
+      s += `<text class="tick" x="${L - 8}" y="${Y(m) + 4}" text-anchor="end">${m / 60} hr${m > 60 ? "s" : ""}</text>`;
+    });
+    [2025, 2026].forEach((y) => {
+      const d = new Date(y, 0, 1);
+      s += `<text class="tick" x="${X(d)}" y="${H - 12}">${y}</text>`;
+    });
+    s += `<line class="limit" x1="${L}" x2="${W - R}" y1="${Y(960)}" y2="${Y(960)}"/>`;
+    s += `<text class="limit-lbl" x="${W - R + 8}" y="${Y(960) + 4}">Limit of reliable</text>`;
+    s += `<text class="limit-lbl" x="${W - R + 8}" y="${Y(960) + 19}">measurement</text>`;
+    const nx = X(now);
+    if (nx <= W - R) s += `<line class="now" x1="${nx}" x2="${nx}" y1="${T}" y2="${H - B}"/>`;
+    const pts = A.points.map((p) => ({ ...p, x: X(parse(p.date)), y: Y(p.minutes) }));
+    s += `<polyline class="line" points="${pts.map((p) => p.x + "," + p.y).join(" ")}"/>`;
+    pts.forEach((p) => {
+      s += `<circle class="pt${p.floor ? " floor" : ""}" cx="${p.x}" cy="${p.y}" r="6"/>`;
+      if (p.floor) s += `<path class="arrow" d="M${p.x - 5} ${p.y - 12} L${p.x} ${p.y - 20} L${p.x + 5} ${p.y - 12} Z"/>`;
+      const dur = p.floor ? "16+ hrs" : fmtDur(p.minutes);
+      const lx = p.side === "left" ? p.x - 12 : p.x + 12;
+      const anchor = p.side === "left" ? "end" : "start";
+      // Right labels sit below the line, left labels above it, so the trend line never crosses text
+      const ly = p.side === "left" ? p.y - 10 : p.y + 18;
+      s += `<text class="lbl" x="${lx}" y="${ly}" text-anchor="${anchor}">${p.model}</text>`;
+      s += `<text class="lbl-sub" x="${lx}" y="${ly + 15}" text-anchor="${anchor}">${dur}</text>`;
+    });
+    const summary = A.points.map((p) => p.model + ": " + (p.floor ? "at least 16 hours" : fmtDur(p.minutes))).join("; ");
+    document.getElementById("auto-chart").innerHTML =
+      `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="METR 50% time horizon by model release date, log scale. ${summary}">${s}</svg>`;
+  })();
+
+  // Incidents
+  const tagLabel = { lab: "Lab's own model", attack: "AI used in attack", supply: "Supply chain" };
+  document.getElementById("incidents").innerHTML = SITE.incidents.map((i) =>
+    `<li><div class="when">${i.when}</div><div><h3>${i.title}</h3><p>${i.text}</p>` +
+    `<div class="foot"><span class="tag ${i.type}">${tagLabel[i.type]}</span>` +
+    `${links(i.sources)}</div></div></li>`
+  ).join("");
+
+  // Milestones
+  const label = { achieved: "Achieved", emerging: "Emerging", early: "Early" };
+  document.getElementById("milestones").innerHTML = SITE.milestones.map((m) =>
+    `<li><div class="status ${m.status}">${label[m.status]}</div>` +
+    `<div><h3>${m.name}</h3><p>${m.evidence}</p><div class="msrc">Sources: ${links(m.sources)}</div></div></li>`
+  ).join("");
+})();
+</script>
 </body>
 </html>

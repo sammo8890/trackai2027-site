@@ -41,7 +41,34 @@
     .count { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 20px; }
     .count .num { font: 800 clamp(6rem, 22vw, 13rem)/.82 var(--display); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
     .count .unit { font: 700 clamp(1.6rem, 4.5vw, 3rem)/1 var(--display); }
-    .lede { max-width: 60ch; margin: 24px 0 0; font-size: 1.125rem; color: var(--muted); }
+    .lede { max-width: 60ch; margin: 16px 0 0; font-size: 1.125rem; color: var(--muted); }
+    .kicker { margin: 0 0 8px; font-weight: 600; color: var(--muted); }
+    .range { margin: 0; font: 800 clamp(3.2rem, 11vw, 7.5rem)/.9 var(--display); letter-spacing: -.01em; }
+    :root { --fa: var(--signal); --fb: var(--future); --fc: #0F766E; }
+    @media (prefers-color-scheme: dark) { :root { --fc: #5EC8B8; } }
+    .dist { display: block; width: 100%; min-width: 640px; height: auto; margin-top: 28px; }
+    .dist .axisline { stroke: var(--ink); }
+    .dist .tick { fill: var(--muted); font: 12px var(--body); }
+    .dist .gridv { stroke: var(--rule); }
+    .dist .curve { stroke-width: 2.5; fill-opacity: .12; }
+    .dist .ca { stroke: var(--fa); fill: var(--fa); } .dist .cb { stroke: var(--fb); fill: var(--fb); } .dist .cc { stroke: var(--fc); fill: var(--fc); }
+    .dist .ma { stroke: var(--fa); } .dist .mb { stroke: var(--fb); } .dist .mc { stroke: var(--fc); }
+    .dist .ta { fill: var(--fa); } .dist .tb { fill: var(--fb); } .dist .tc { fill: var(--fc); }
+    .dist .lbl { font: 600 13px var(--body); }
+    .dist .lbl-sub { font: 12px var(--body); fill: var(--muted); }
+    .dist .today { stroke: var(--ink); stroke-width: 1; opacity: .5; }
+    .dist .scen { stroke: var(--ink); stroke-dasharray: 4 4; }
+    .dist .scen-lbl, .dist .today-lbl { font: 12px var(--body); fill: var(--ink); }
+    .dist .tail { font: italic 12px var(--body); fill: var(--muted); }
+    table.medians { margin-top: 20px; }
+    table.medians td:first-child { font-weight: 600; }
+    .sw { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; }
+    .sw.a { background: var(--fa); } .sw.b { background: var(--fb); } .sw.c { background: var(--fc); }
+    .reasons { margin: 20px 0 0; padding: 0; list-style: none; counter-reset: r; display: grid; gap: 10px; }
+    @media (min-width: 760px) { .reasons { grid-template-columns: 1fr 1fr; column-gap: 32px; } }
+    .reasons li { counter-increment: r; display: grid; grid-template-columns: 1.75rem 1fr; gap: 8px; color: var(--muted); font-size: .9375rem; }
+    .reasons li::before { content: counter(r); display: grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 1.5px solid var(--ink); color: var(--ink); font: 700 .875rem/1 var(--display); }
+    .reasons b { color: var(--ink); font-weight: 600; }
 
     /* Timeline: the one memorable piece */
     .timeline-scroll { overflow-x: auto; margin: 40px 0 0; padding-bottom: 8px; }
@@ -141,10 +168,58 @@
    ========================================================= */
 const SITE = {
   updated: "2026-09-29",
-  // Countdown target: AI 2027 places the superhuman coder in March 2027 (no exact day), so we count to March 1.
-  countdown: { date: "2027-03-01", before: "days until a superhuman coder", after: "days past the superhuman coder forecast" },
   contact: "",   // ADD YOUR EMAIL for corrections, e.g. "corrections@trackai2027.com"
-  lede: 'The <a href="https://ai-2027.com/research/timelines-forecast" rel="noopener">AI 2027 scenario</a> forecast a superhuman AI coder by March 2027. The countdown runs to March 1, 2027. This page tracks how close today\'s frontier models are.',
+
+  // ===== FORECASTS: the AI 2027 authors' published views =====
+  // Dates are "YYYY-MM". AC = Automated Coder, TED-AI = Top-Expert-Dominating AI, ASI = superintelligence.
+  // ac.p10 / p50 / p90 are each author's all-things-considered percentiles; curves are drawn from these.
+  forecasts: {
+    asOf: "Aug 2026",
+    headline: "Late 2027 to 2030",
+    sub: "When the authors of AI 2027 now expect AI to fully automate coding, the step they expect to set off rapid, AI-driven AI research.",
+    // Optional chart label placement: labelSide "left"/"right"; labelY = height as a fraction of the plot (0 bottom, 1 top).
+    authors: [
+      { name: "Daniel Kokotajlo", short: "Daniel", color: "a",
+        ac: { p10: "2027-01", p50: "2027-11", p90: "2030-04" }, tedai: "2028-11", asi: "2029-03" },
+      { name: "Brendan Halstead", short: "Brendan", color: "c",
+        ac: { p10: "2027-01", p50: "2029-01", p90: "2050-01" }, tedai: "2031-04", asi: null,
+        labelY: 0.62 },
+      { name: "Eli Lifland", short: "Eli", color: "b",
+        ac: { p10: "2027-06", p50: "2030-01", p90: "2070-10" }, tedai: "2032-07", asi: "2033-07",
+        labelY: 0.38 }
+    ],
+    scenario: { date: "2027-03", label: "AI 2027 scenario: superhuman coder" },
+    caveat: "Curves are smoothed from each author's published 10th, 50th and 90th percentiles. The authors say their forecasts assume AI development goes as fast as is technically feasible, with no government slowdown.",
+    sources: [{ name: "AI Futures Project, Aug 2026 update", url: "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }],
+    comparison: 'For comparison, <a href="https://aimultiple.com/specialized-ai" rel="noopener">Metaculus forecasters</a> put the first "weakly general" AI around 2028, while a <a href="https://arxiv.org/abs/2401.02843" rel="noopener">2023 survey of about 2,800 AI researchers</a> gave even odds of human-level machine intelligence by 2047.'
+  },
+
+  // ===== SHIFTS: how the authors' AGI (TED-AI) medians have moved =====
+  // made: when the forecast was made. median: forecast year as a decimal. approx: true = estimated from "about 1.5 years sooner".
+  shifts: {
+    series: [
+      { name: "Daniel", color: "a", points: [
+        { made: 2025.04, median: 2027.5 }, { made: 2025.12, median: 2028.5 }, { made: 2025.29, median: 2028.5 },
+        { made: 2025.62, median: 2030.0 }, { made: 2025.87, median: 2030.5 }, { made: 2026.04, median: 2030.95 },
+        { made: 2026.25, median: 2029.45, approx: true }, { made: 2026.62, median: 2028.87 } ] },
+      { name: "Eli", color: "b", points: [
+        { made: 2024.96, median: 2032.5 }, { made: 2025.29, median: 2031.5 }, { made: 2025.54, median: 2033.5 },
+        { made: 2025.87, median: 2035.5 }, { made: 2026.04, median: 2035.0 },
+        { made: 2026.25, median: 2033.5, approx: true }, { made: 2026.62, median: 2032.5 } ] }
+    ],
+    events: [
+      { at: 2025.12, text: "Daniel moves from 2027 to 2028, persuaded by a \"benchmarks and gaps\" analysis of what AI still can't do." },
+      { at: 2025.29, text: "AI 2027 is published. Its scenario reaches a superhuman coder in March 2027, though the authors' own medians were already later." },
+      { at: 2025.58, text: "Pushed later: fixes to their model, and a METR study finding AI tools slowed experienced developers down." },
+      { at: 2025.95, text: "Pushed later again: progress runs somewhat slower than the scenario, and their new AI Futures Model gives later dates." },
+      { at: 2026.25, text: "Pulled sooner: METR's time horizons double about every 4 months, and Claude Opus 4.6 impresses." },
+      { at: 2026.62, text: "Slightly sooner: three separate methods (coding speed-up, revenue, time horizons) agree, and reality runs at about 75% of the scenario's pace." }
+    ],
+    note: "Medians for AGI, defined as AI at least as good as top human experts at virtually all cognitive tasks. Hollow dots are estimated: the April 2026 update said these medians moved about 1.5 years sooner.",
+    sources: [{ name: "AI Futures Project, Jan 2026", url: "https://blog.aifutures.org/p/clarifying-how-our-ai-timelines-forecasts" },
+              { name: "Apr 2026", url: "https://blog.aifutures.org/p/q1-2026-timelines-update" },
+              { name: "Aug 2026", url: "https://blog.aifutures.org/p/q25-2026-timelines-update-uplift" }]
+  },
 
   // Timeline: date as "YYYY-MM" or "YYYY-MM-DD". predicted: true = forecast, not a release.
   timeline: [
@@ -270,9 +345,31 @@ const SITE = {
     <div class="updated" id="updated"></div>
   </header>
 
-  <section class="hero" aria-labelledby="countdown">
-    <h1 class="count" id="countdown"><span class="num" id="days">–</span><span class="unit" id="unit"></span></h1>
-    <p class="lede" id="lede"></p>
+  <section class="hero" aria-labelledby="hero-h">
+    <p class="kicker" id="hero-kicker"></p>
+    <h1 class="range" id="hero-h"></h1>
+    <p class="lede" id="hero-sub"></p>
+    <div class="chart-scroll"><div id="dist-chart"></div></div>
+    <div class="table-scroll">
+      <table class="medians">
+        <thead><tr><th scope="col">Forecaster</th><th scope="col">Automated coder</th><th scope="col">Top-expert AI</th><th scope="col">Superintelligence</th></tr></thead>
+        <tbody id="medians"></tbody>
+      </table>
+    </div>
+    <p class="note" id="dist-note"></p>
+    <p class="note" id="dist-compare"></p>
+  </section>
+
+  <section class="block" aria-labelledby="shift-h">
+    <h2 id="shift-h">How their forecasts have shifted</h2>
+    <p class="sub">Each dot is a published median for when AGI arrives. Numbers mark the reasons behind each move.</p>
+    <div class="chart-scroll"><div id="shift-chart"></div></div>
+    <ol class="reasons" id="reasons"></ol>
+    <p class="note" id="shift-note"></p>
+  </section>
+
+  <section class="block" aria-labelledby="rel-h">
+    <h2 id="rel-h">Recent releases</h2>
     <div class="timeline-scroll">
       <div class="timeline" id="timeline" role="img" aria-label="Timeline of major AI model releases from 2025 to 2027, with today's date marked"></div>
     </div>
@@ -327,7 +424,7 @@ const SITE = {
     <p>TrackAI2027 is an independent project. It is not affiliated with, sponsored by, or endorsed by any AI company, METR, or the AI Futures Project. Model and company names are trademarks of their respective owners and are used only to identify them.</p>
     <p>Benchmark scores are reported by the organizations linked beside them and are vendor-reported unless marked independent. Benchmarks differ in methods, harnesses, and effort settings, so figures aren't directly comparable, and they may be revised after publication.</p>
     <p>Incident summaries are based on public company disclosures and news reporting, linked with each entry. Where details are unconfirmed, the summary says "reportedly" or names who made the claim. Inclusion doesn't imply wrongdoing by any company named.</p>
-    <p>Milestone statuses are this site's editorial judgment, not the view of the AI 2027 authors. This site is for general information only and isn't professional, legal, investment, or security advice.</p>
+    <p>Forecasts are summaries of the named researchers' published views, linked beside each chart; they are not this site's predictions, and the charts simplify the originals. Milestone statuses are this site's editorial judgment, not the view of the AI 2027 authors. This site is for general information only and isn't professional, legal, investment, or security advice.</p>
     <p id="contact"></p>
   </footer>
 </div>
@@ -349,16 +446,122 @@ const SITE = {
       'Spotted an error? Email <a href="mailto:' + SITE.contact + '">' + SITE.contact + '</a> and we\'ll correct it.';
   }
   const links = (arr) => arr.map((s) => `<a href="${s.url}" rel="noopener">${s.name}</a>`).join(", ");
-  document.getElementById("lede").innerHTML = SITE.lede;
-
-  // Countdown to the forecast superhuman coder date
   const now = new Date();
-  const dayMs = 86400000;
-  const target = parse(SITE.countdown.date);
-  const daysEl = document.getElementById("days"), unitEl = document.getElementById("unit");
-  const diff = Math.ceil((target - now) / dayMs);
-  daysEl.textContent = Math.abs(diff);
-  unitEl.textContent = diff >= 0 ? SITE.countdown.before : SITE.countdown.after;
+  const ym = (s) => { const [y, m] = s.split("-").map(Number); return y + ((m || 1) - 1 + 0.5) / 12; };
+  const monthName = (s) => { const [y, m] = s.split("-").map(Number); return new Date(y, m - 1, 1).toLocaleDateString("en-US", { month: "short", year: "numeric" }); };
+  const nowY = now.getFullYear() + (now - new Date(now.getFullYear(), 0, 1)) / (365.25 * 86400000);
+
+  // ===== Hero: forecast distributions for Automated Coder =====
+  (function () {
+    const F = SITE.forecasts;
+    document.getElementById("hero-kicker").textContent = "The intelligence explosion, as forecast in " + F.asOf;
+    document.getElementById("hero-h").textContent = F.headline;
+    document.getElementById("hero-sub").textContent = F.sub;
+    document.getElementById("dist-note").innerHTML = F.caveat + " Source: " + links(F.sources) + ".";
+    document.getElementById("dist-compare").innerHTML = F.comparison;
+
+    const W = 800, H = 330, L = 20, R = 20, T = 30, B = 40;
+    const x0 = 2026.5, x1 = 2036;
+    const X = (y) => L + ((y - x0) / (x1 - x0)) * (W - L - R);
+    const t0 = 2026.6; // curves start here: the forecasts were made in Aug 2026
+    const pdfOf = (a) => {
+      const mu = Math.log(ym(a.ac.p50) - t0);
+      const sL = (mu - Math.log(ym(a.ac.p10) - t0)) / 1.2816;
+      const sR = (Math.log(ym(a.ac.p90) - t0) - mu) / 1.2816;
+      return (y) => {
+        const t = y - t0; if (t <= 0) return 0;
+        const x = Math.log(t), s = x < mu ? sL : sR;
+        return (2 / (Math.sqrt(2 * Math.PI) * (sL + sR))) * Math.exp(-((x - mu) ** 2) / (2 * s * s)) / t;
+      };
+    };
+    const steps = []; for (let y = x0; y <= x1 + 1e-9; y += 0.02) steps.push(y);
+    const curves = F.authors.map((a) => ({ a, f: pdfOf(a) }));
+    const peak = Math.max(...curves.flatMap((c) => steps.map(c.f)));
+    const Y = (v) => H - B - (v / peak) * (H - T - B);
+    let s = "";
+    for (let yr = 2027; yr <= 2036; yr++) {
+      s += `<line class="gridv" x1="${X(yr)}" x2="${X(yr)}" y1="${T}" y2="${H - B}"/>`;
+      s += `<text class="tick" x="${X(yr)}" y="${H - B + 20}" text-anchor="middle">${yr}</text>`;
+    }
+    s += `<line class="axisline" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>`;
+    curves.forEach(({ a, f }) => {
+      const pts = steps.map((y) => `${X(y).toFixed(1)},${Y(f(y)).toFixed(1)}`);
+      s += `<path class="curve c${a.color}" d="M${X(x0)},${H - B} L${pts.join(" L")} L${X(x1)},${H - B} Z"/>`;
+    });
+    // scenario marker and today
+    const sx = X(ym(F.scenario.date));
+    s += `<line class="scen" x1="${sx}" x2="${sx}" y1="${T - 8}" y2="${H - B}"/>`;
+    s += `<text class="scen-lbl" x="${sx + 6}" y="${T - 12}">${F.scenario.label}</text>`;
+    const tx = X(nowY);
+    if (tx > L && tx < W - R) {
+      s += `<line class="today" x1="${tx}" x2="${tx}" y1="${T + 10}" y2="${H - B}"/>`;
+      s += `<text class="today-lbl" x="${tx - 6}" y="${H - B - 6}" text-anchor="end">Today</text>`;
+    }
+    // medians with direct labels (color is never the only cue)
+    curves.forEach(({ a, f }) => {
+      const m = ym(a.ac.p50), mx = X(m), my = Y(f(m));
+      const ly = a.labelY != null ? (H - B) - a.labelY * (H - T - B) : my;
+      const left = a.labelSide === "left", lx = left ? mx - 9 : mx + 9, anc = left ? "end" : "start";
+      s += `<line class="m${a.color}" stroke-width="1.5" x1="${mx}" x2="${mx}" y1="${Math.min(my, ly - 14)}" y2="${H - B}"/>`;
+      s += `<circle class="t${a.color}" cx="${mx}" cy="${my}" r="5"/>`;
+      s += `<text class="lbl t${a.color}" x="${lx}" y="${ly - 8}" text-anchor="${anc}">${a.short}</text>`;
+      s += `<text class="lbl-sub" x="${lx}" y="${ly + 7}" text-anchor="${anc}">median ${monthName(a.ac.p50)}</text>`;
+    });
+    s += `<text class="tail" x="${W - R}" y="${T + 60}" text-anchor="end">Eli's and Brendan's curves</text>`;
+    s += `<text class="tail" x="${W - R}" y="${T + 76}" text-anchor="end">run on past 2036 →</text>`;
+    const summary = F.authors.map((a) => `${a.name}: median ${monthName(a.ac.p50)}, 80% range ${monthName(a.ac.p10)} to ${monthName(a.ac.p90)}`).join("; ");
+    document.getElementById("dist-chart").innerHTML =
+      `<svg class="dist" viewBox="0 0 ${W} ${H}" role="img" aria-label="Forecast probability of when AI fully automates coding. ${summary}.">${s}</svg>`;
+
+    document.getElementById("medians").innerHTML = F.authors.map((a) =>
+      `<tr><td><span class="sw ${a.color}"></span>${a.name}</td><td>${monthName(a.ac.p50)}</td>` +
+      `<td>${a.tedai ? monthName(a.tedai) : "Not published"}</td><td>${a.asi ? monthName(a.asi) : "Not published"}</td></tr>`
+    ).join("");
+  })();
+
+  // ===== Shifting forecasts =====
+  (function () {
+    const S = SITE.shifts;
+    document.getElementById("shift-note").innerHTML = S.note + " Sources: " + links(S.sources) + ".";
+    document.getElementById("reasons").innerHTML = S.events.map((e) => `<li><span>${e.text}</span></li>`).join("");
+    const W = 800, H = 340, L = 56, R = 110, T = 20, B = 64;
+    const x0 = 2024.9, x1 = 2026.8, y0 = 2027, y1 = 2036;
+    const X = (v) => L + ((v - x0) / (x1 - x0)) * (W - L - R);
+    const Y = (v) => T + (1 - (v - y0) / (y1 - y0)) * (H - T - B);
+    let s = "";
+    for (let yr = 2027; yr <= 2036; yr++) {
+      s += `<line class="gridv" x1="${L}" x2="${W - R}" y1="${Y(yr)}" y2="${Y(yr)}"/>`;
+      s += `<text class="tick" x="${L - 8}" y="${Y(yr) + 4}" text-anchor="end">${yr}</text>`;
+    }
+    [2025, 2026].forEach((yr) => {
+      s += `<text class="tick" x="${X(yr)}" y="${H - B + 20}" text-anchor="middle">${yr}</text>`;
+      s += `<line class="axisline" x1="${X(yr)}" x2="${X(yr)}" y1="${H - B}" y2="${H - B + 6}"/>`;
+    });
+    s += `<text class="tick" x="${L}" y="${H - 6}">Forecast made</text>`;
+    s += `<line class="axisline" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>`;
+    S.series.forEach((ser) => {
+      const pts = ser.points.map((p) => `${X(p.made)},${Y(p.median)}`).join(" ");
+      s += `<polyline class="m${ser.color}" fill="none" stroke-width="2.5" points="${pts}"/>`;
+      ser.points.forEach((p) => {
+        s += p.approx
+          ? `<circle class="m${ser.color}" fill="var(--paper)" stroke-width="2" cx="${X(p.made)}" cy="${Y(p.median)}" r="5"/>`
+          : `<circle class="t${ser.color}" cx="${X(p.made)}" cy="${Y(p.median)}" r="5"/>`;
+      });
+      const last = ser.points[ser.points.length - 1];
+      const yrs = Math.floor(last.median), mo = Math.round((last.median - yrs) * 12);
+      const lbl = new Date(yrs, Math.min(11, mo), 1).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      s += `<text class="lbl t${ser.color}" x="${X(last.made) + 10}" y="${Y(last.median) - 2}">${ser.name}</text>`;
+      s += `<text class="lbl-sub" x="${X(last.made) + 10}" y="${Y(last.median) + 13}">AGI ${lbl}</text>`;
+    });
+    S.events.forEach((e, i) => {
+      const ex = X(e.at), ey = H - B + 38;
+      s += `<circle cx="${ex}" cy="${ey}" r="10" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>`;
+      s += `<text x="${ex}" y="${ey + 4}" text-anchor="middle" style="font:700 12px var(--display);fill:var(--ink)">${i + 1}</text>`;
+    });
+    const summary = S.series.map((ser) => ser.name + ": " + ser.points.map((p) => p.median.toFixed(1)).join(", ")).join("; ");
+    document.getElementById("shift-chart").innerHTML =
+      `<svg class="dist" viewBox="0 0 ${W} ${H}" role="img" aria-label="AGI median forecasts over time. ${summary}.">${s}</svg>`;
+  })();
 
   // Timeline
   const start = new Date(2025, 0, 1), end = new Date(2027, 11, 31);
